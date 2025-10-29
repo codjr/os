@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cálculo de Períodos</title>
+<link rel="icon" href="https://cdn-defesaaereanaval.nuneshost.com/wp-content/uploads/2018/03/SPS_GA_11_02.png" type="image/png">
+<style>
+:root {
+  --azul: #0078d7;
+  --azul-escuro: #005fa3;
+  --cinza: #f2f2f2;
+  --borda: #ddd;
+  --texto: #222;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+body {
+  background: var(--cinza);
+  color: var(--texto);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+.container {
+  background: #fff;
+  width: 100%;
+  max-width: 950px;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  animation: fadeIn 0.3s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+h1 {
+  text-align: center;
+  color: var(--azul-escuro);
+  margin-bottom: 25px;
+  font-size: 1.6em;
+  font-weight: 600;
+}
+.grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.periodo {
+  flex: 1 1 30%;
+  min-width: 270px;
+  background: var(--cinza);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 20px;
+  transition: transform 0.2s;
+}
+.periodo:hover {
+  transform: translateY(-3px);
+}
+h3 {
+  text-align: center;
+  color: var(--azul);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-size: 1em;
+  background: #fff;
+  color: var(--texto);
+  transition: border-color 0.2s;
+}
+input[type="date"]:focus {
+  border-color: var(--azul);
+  outline: none;
+}
+.resultado {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+  color: var(--azul-escuro);
+  font-size: 1em;
+}
+.total {
+  text-align: center;
+  margin-top: 35px;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #006600;
+  border-top: 2px solid var(--borda);
+  padding-top: 15px;
+}
+@media (max-width: 850px) {
+  .grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  .periodo {
+    width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Cálculo de Dias por Período</h1>
+
+  <div class="grid">
+    <div class="periodo">
+      <h3>Período 1</h3>
+      <label>Data inicial:</label>
+      <input type="date" id="inicio1">
+      <label>Data final:</label>
+      <input type="date" id="fim1">
+      <div class="resultado" id="resultado1"></div>
+    </div>
+
+    <div class="periodo">
+      <h3>Período 2</h3>
+      <label>Data inicial:</label>
+      <input type="date" id="inicio2">
+      <label>Data final:</label>
+      <input type="date" id="fim2">
+      <div class="resultado" id="resultado2"></div>
+    </div>
+
+    <div class="periodo">
+      <h3>Período 3</h3>
+      <label>Data inicial:</label>
+      <input type="date" id="inicio3">
+      <label>Data final:</label>
+      <input type="date" id="fim3">
+      <div class="resultado" id="resultado3"></div>
+    </div>
+  </div>
+
+  <div class="total" id="total">TOTAL:</div>
+</div>
+
+<script>
+function calcularDias(inicio, fim) {
+  if (!inicio || !fim) return 0;
+  const dataInicio = new Date(inicio);
+  const dataFim = new Date(fim);
+  const diff = dataFim - dataInicio;
+  return diff >= 0 ? Math.ceil(diff / (1000*60*60*24)) + 1 : 0;
+}
+
+function calcularUnico(num) {
+  const inicio = document.getElementById(`inicio${num}`).value;
+  const fim = document.getElementById(`fim${num}`).value;
+  const dias = calcularDias(inicio, fim);
+  document.getElementById(`resultado${num}`).textContent =
+    dias > 0 ? `${dias} dias` : "";
+  somarTotal();
+}
+
+function somarTotal() {
+  let soma = 0;
+  for (let i=1;i<=3;i++){
+    const texto = document.getElementById(`resultado${i}`).textContent;
+    const match = texto.match(/(\d+)/);
+    if(match) soma += parseInt(match[1]);
+  }
+  document.getElementById("total").textContent =
+    soma>0 ? `TOTAL: ${soma} dias` : "TOTAL:";
+}
+
+// Auto-avanço e cálculo automático
+function configurarAutoAvanco() {
+  for (let i=1;i<=3;i++){
+    const inicio = document.getElementById(`inicio${i}`);
+    const fim = document.getElementById(`fim${i}`);
+    const proximoInicio = document.getElementById(`inicio${i+1}`);
+
+    inicio.addEventListener("change", ()=>{ if(inicio.value.length===10) fim.focus(); });
+    fim.addEventListener("change", ()=>{
+      if(fim.value.length===10){
+        calcularUnico(i);
+        if(proximoInicio) proximoInicio.focus();
+      }
+    });
+  }
+}
+
+// Limpar campos ao carregar
+function limparCampos(){
+  for(let i=1;i<=3;i++){
+    document.getElementById(`inicio${i}`).value="";
+    document.getElementById(`fim${i}`).value="";
+    document.getElementById(`resultado${i}`).textContent="";
+  }
+  document.getElementById("total").textContent="TOTAL:";
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  limparCampos();
+  configurarAutoAvanco();
+});
+</script>
+</body>
+</html>
