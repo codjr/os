@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>🌅 Nascer & Pôr do Sol — Brasil</title>
 
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/sun-192.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>🌅 Nascer & Pôr do Sol — Brasil</h1>
+    <button id="temaBtn" title="Alternar tema">🌙</button>
+  </header>
+
+  <div class="toolbar card">
+    <div class="search-wrap">
+      <label for="citySearch">Cidade</label>
+      <input id="citySearch" type="text"
+             placeholder="Ex.: São Paulo, Fortaleza, Curitiba…"
+             autocomplete="off">
+      <ul id="suggestions" class="suggestions"></ul>
+    </div>
+
+    <div class="chips" id="recentChips"></div>
+
+    <div class="status-row">
+      <div id="statusBox" class="offline">⏳ Verificando status...</div>
+      <div class="infoTime" id="tempoCache"></div>
+    </div>
+  </div>
+
+  <main class="card">
+    <div class="controls">
+      <button id="atualizar">🔄 Atualizar agora</button>
+      <span id="localInfo" class="local-info">Local: —</span>
+    </div>
+
+    <p id="info">Carregando dados…</p>
+    <div id="saida"></div>
+    <canvas id="grafico" height="220"></canvas>
+
+    <small id="footNote">
+      Dados com cache offline • API: sunrise-sunset.org • Geocoding: Open-Meteo
+    </small>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
